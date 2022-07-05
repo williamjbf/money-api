@@ -1,0 +1,5 @@
+FROM postgres
+
+ENV POSTGRES_DB money-db
+ENV POSTGRES_USER postgres
+ENV POSTGRES_PASSWORD postgres

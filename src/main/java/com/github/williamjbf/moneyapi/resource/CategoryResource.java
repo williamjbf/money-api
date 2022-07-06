@@ -38,6 +38,6 @@ public class CategoryResource {
     @GetMapping("/{id}")
     public ResponseEntity<Category> findById(@PathVariable Long id){
         Optional<Category> category = categoryRepository.findById(id);
-        return category.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        return category.isPresent() ? ResponseEntity.ok(category.get()) : ResponseEntity.notFound().build();
     }
 }

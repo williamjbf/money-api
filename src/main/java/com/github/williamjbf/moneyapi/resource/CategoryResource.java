@@ -2,11 +2,13 @@ package com.github.williamjbf.moneyapi.resource;
 
 import com.github.williamjbf.moneyapi.model.Category;
 import com.github.williamjbf.moneyapi.repository.CategoryRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.servlet.http.HttpServletResponse;
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -23,4 +25,14 @@ public class CategoryResource {
     public List<Category> list(){
         return categoryRepository.findAll();
     }
+
+    @PostMapping
+    public ResponseEntity<Category> create(@RequestBody Category category, HttpServletResponse response){
+        Category savedCategory = categoryRepository.save(category);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}")
+                .buildAndExpand(savedCategory.getId()).toUri();
+//        response.setHeader("Location",uri.toASCIIString());
+        return ResponseEntity.created(uri).body(savedCategory);
+    }
+
 }

@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/people")
@@ -34,6 +35,12 @@ public class PeopleResource {
         URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}")
                 .buildAndExpand(savedPeople.getId()).toUri();
         return ResponseEntity.created(uri).body(savedPeople);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<People> findById(@PathVariable Long id){
+        Optional<People> people = peopleRepository.findById(id);
+        return people.isPresent() ? ResponseEntity.ok(people.get()) : ResponseEntity.notFound().build();
     }
 
 }

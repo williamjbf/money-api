@@ -1,6 +1,7 @@
 package com.github.williamjbf.moneyapi.resource;
 
 import com.github.williamjbf.moneyapi.event.ResourceCreatedEvent;
+import com.github.williamjbf.moneyapi.model.Address;
 import com.github.williamjbf.moneyapi.model.People;
 import com.github.williamjbf.moneyapi.repository.PeopleRepository;
 import com.github.williamjbf.moneyapi.service.PeopleService;
@@ -61,8 +62,13 @@ public class PeopleResource {
     }
 
     @PutMapping("/{id}/active")
-    public void updateActiveStatus(@PathVariable Long id, @RequestBody Boolean status){
-        peopleService.updateActiveStatus(id,status);
+    public ResponseEntity<People> updateActiveStatus(@PathVariable Long id, @RequestBody Boolean status){
+        return peopleService.updateActiveStatus(id,status);
+    }
+
+    @PutMapping("/{id}/address")
+    public ResponseEntity<People> updatePeopleAddress(@PathVariable Long id, @RequestBody Address address){
+        return peopleService.updatePeopleAddress(id,address);
     }
 
 }

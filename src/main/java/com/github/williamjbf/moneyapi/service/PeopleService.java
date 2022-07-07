@@ -1,5 +1,6 @@
 package com.github.williamjbf.moneyapi.service;
 
+import com.github.williamjbf.moneyapi.model.Address;
 import com.github.williamjbf.moneyapi.model.People;
 import com.github.williamjbf.moneyapi.repository.PeopleRepository;
 import org.springframework.beans.BeanUtils;
@@ -25,10 +26,18 @@ public class PeopleService {
         return ResponseEntity.ok(savedPeople);
     }
 
-    public void updateActiveStatus(Long id, Boolean status) {
+    public ResponseEntity<People> updateActiveStatus(Long id, Boolean status) {
         People savedPeople = findPeopleById(id);
         savedPeople.setActive(status);
         peopleRepository.save(savedPeople);
+        return ResponseEntity.ok(savedPeople);
+    }
+
+    public ResponseEntity<People> updatePeopleAddress(Long id, Address address) {
+        People savedPeople = findPeopleById(id);
+        savedPeople.setAddress(address);
+        peopleRepository.save(savedPeople);
+        return ResponseEntity.ok(savedPeople);
     }
 
     private People findPeopleById(Long id) {

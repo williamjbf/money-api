@@ -3,17 +3,14 @@ package com.github.williamjbf.moneyapi.resource;
 import com.github.williamjbf.moneyapi.event.ResourceCreatedEvent;
 import com.github.williamjbf.moneyapi.model.Category;
 import com.github.williamjbf.moneyapi.repository.CategoryRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEvent;
+import com.github.williamjbf.moneyapi.service.CategoryService;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,11 +19,12 @@ import java.util.Optional;
 public class CategoryResource {
 
     private final CategoryRepository categoryRepository;
-
+    private final CategoryService categoryService;
     private final ApplicationEventPublisher publisher;
 
-    public CategoryResource(CategoryRepository categoryRepository, ApplicationEventPublisher publisher) {
+    public CategoryResource(CategoryRepository categoryRepository, CategoryService categoryService, ApplicationEventPublisher publisher) {
         this.categoryRepository = categoryRepository;
+        this.categoryService = categoryService;
         this.publisher = publisher;
     }
 
@@ -51,8 +49,13 @@ public class CategoryResource {
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteById(@PathVariable Long id){
         categoryRepository.deleteById(id);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Category> update(@PathVariable Long id, @Valid @RequestBody Category category){
+        return categoryService.update(id,category);
     }
 }

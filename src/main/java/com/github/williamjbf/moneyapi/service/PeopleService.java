@@ -18,13 +18,24 @@ public class PeopleService {
     }
 
     public ResponseEntity<People> update(Long id,People people){
+        People savedPeople = findPeopleById(id);
+
+        BeanUtils.copyProperties(people,savedPeople,"id");
+        peopleRepository.save(savedPeople);
+        return ResponseEntity.ok(savedPeople);
+    }
+
+    public void updateActiveStatus(Long id, Boolean status) {
+        People savedPeople = findPeopleById(id);
+        savedPeople.setActive(status);
+        peopleRepository.save(savedPeople);
+    }
+
+    private People findPeopleById(Long id) {
         Optional<People> savedPeople = peopleRepository.findById(id);
         if(savedPeople.isEmpty()){
             throw new EmptyResultDataAccessException(1);
         }
-
-        BeanUtils.copyProperties(people,savedPeople.get(),"id");
-        peopleRepository.save(savedPeople.get());
-        return ResponseEntity.ok(savedPeople.get());
+        return savedPeople.get();
     }
 }

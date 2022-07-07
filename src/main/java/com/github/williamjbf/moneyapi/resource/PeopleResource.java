@@ -60,4 +60,9 @@ public class PeopleResource {
         return peopleService.update(id, people);
     }
 
+    @PutMapping("/{id}/active")
+    public void updateActiveStatus(@PathVariable Long id, @RequestBody Boolean status){
+        peopleService.updateActiveStatus(id,status);
+    }
+
 }

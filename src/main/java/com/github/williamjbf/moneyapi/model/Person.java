@@ -1,15 +1,13 @@
 package com.github.williamjbf.moneyapi.model;
 
-import org.springframework.boot.context.properties.bind.DefaultValue;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Objects;
 
 @Entity
-@Table(name = "people")
-public class People {
+@Table(name = "person")
+public class Person {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -61,8 +59,8 @@ public class People {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        People people = (People) o;
-        return Objects.equals(id, people.id);
+        Person person = (Person) o;
+        return Objects.equals(id, person.id);
     }
 
     @Override

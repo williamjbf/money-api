@@ -37,7 +37,7 @@ public class MoneyResponseEntityExceptionHandler extends ResponseEntityException
                 "invalid.message",
                 null,
                 LocaleContextHolder.getLocale());
-        String devMessage = ex.getCause().toString();
+        String devMessage =ex.getCause() != null ? ex.getCause().toString() : ex.toString();
 
         List<Erro> erros = List.of(new Erro(userMessage, devMessage));
         return handleExceptionInternal(ex,erros,headers, HttpStatus.BAD_REQUEST, request);

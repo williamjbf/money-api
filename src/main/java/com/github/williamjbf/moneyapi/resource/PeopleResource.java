@@ -47,4 +47,10 @@ public class PeopleResource {
         return people.isPresent() ? ResponseEntity.ok(people.get()) : ResponseEntity.notFound().build();
     }
 
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteById(@PathVariable Long id){
+        peopleRepository.deleteById(id);
+    }
+
 }

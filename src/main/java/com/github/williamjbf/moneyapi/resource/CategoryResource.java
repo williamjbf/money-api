@@ -49,4 +49,10 @@ public class CategoryResource {
         Optional<Category> category = categoryRepository.findById(id);
         return category.isPresent() ? ResponseEntity.ok(category.get()) : ResponseEntity.notFound().build();
     }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public void deleteById(@PathVariable Long id){
+        categoryRepository.deleteById(id);
+    }
 }

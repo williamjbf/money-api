@@ -1,6 +1,8 @@
 package com.github.williamjbf.moneyapi.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
@@ -13,21 +15,26 @@ public class Posting {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
+    @Size(min = 5, max = 100)
     private String description;
+    @NotNull
     private LocalDate dueDate;
     private LocalDate paymentDate;
+    @NotNull
     private BigDecimal value;
     private String note;
-
+    @NotNull
     @Enumerated(EnumType.STRING)
     private TypePosting type;
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "id_category")
     private Category category;
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "id_person")
     private Person person;
-
 
     public Long getId() {
         return id;

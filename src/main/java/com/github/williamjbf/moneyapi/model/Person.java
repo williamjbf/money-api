@@ -1,5 +1,7 @@
 package com.github.williamjbf.moneyapi.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -22,6 +24,12 @@ public class Person {
 
     @NotNull
     private Boolean active;
+
+    @JsonIgnore
+    @Transient
+    public boolean isInactive(){
+        return !this.active;
+    }
 
     public Long getId() {
         return id;

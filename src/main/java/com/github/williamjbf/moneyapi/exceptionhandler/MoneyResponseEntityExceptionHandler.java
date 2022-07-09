@@ -1,5 +1,6 @@
 package com.github.williamjbf.moneyapi.exceptionhandler;
 
+import com.github.williamjbf.moneyapi.service.exception.PersonNotExistOrInactiveException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -84,6 +85,19 @@ public class MoneyResponseEntityExceptionHandler extends ResponseEntityException
 
         return handleExceptionInternal(ex,erros,new HttpHeaders(),HttpStatus.BAD_REQUEST, request);
 
+    }
+
+    @ExceptionHandler({PersonNotExistOrInactiveException.class})
+    public ResponseEntity<Object> handlePersonNotExistOrInactiveException(PersonNotExistOrInactiveException ex, WebRequest request){
+        String userMessage = messageSource.getMessage(
+                "person.not-exist-or-inactive",
+                null,
+                LocaleContextHolder.getLocale());
+
+        String devMessage = ExceptionUtils.getRootCauseMessage(ex);
+
+        List<Erro> erros = List.of(new Erro(userMessage, devMessage));
+        return handleExceptionInternal(ex,erros,new HttpHeaders(),HttpStatus.BAD_REQUEST,request);
     }
 
     private List<Erro> createErrorList(BindingResult bindingResult){

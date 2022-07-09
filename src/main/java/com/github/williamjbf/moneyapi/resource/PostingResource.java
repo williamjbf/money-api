@@ -4,6 +4,7 @@ import com.github.williamjbf.moneyapi.event.ResourceCreatedEvent;
 import com.github.williamjbf.moneyapi.model.Person;
 import com.github.williamjbf.moneyapi.model.Posting;
 import com.github.williamjbf.moneyapi.repository.PostingRepository;
+import com.github.williamjbf.moneyapi.service.PostingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
@@ -20,12 +21,13 @@ import java.util.Optional;
 public class PostingResource {
 
     private final PostingRepository postingRepository;
-
+    private final PostingService postingService;
     private final ApplicationEventPublisher publisher;
 
-    public PostingResource(PostingRepository postingRepository, ApplicationEventPublisher publisher) {
+    public PostingResource(PostingRepository postingRepository, ApplicationEventPublisher publisher, PostingService postingService) {
         this.postingRepository = postingRepository;
         this.publisher = publisher;
+        this.postingService = postingService;
     }
 
     @GetMapping
@@ -41,7 +43,7 @@ public class PostingResource {
 
     @PostMapping
     public ResponseEntity<Posting> create(@Valid @RequestBody Posting posting, HttpServletResponse response){
-        Posting savedPosting = postingRepository.save(posting);
+        Posting savedPosting = postingService.save(posting);
 
         publisher.publishEvent(new ResourceCreatedEvent(this,response, savedPosting.getId()));
         return ResponseEntity.status(HttpStatus.CREATED).body(savedPosting);

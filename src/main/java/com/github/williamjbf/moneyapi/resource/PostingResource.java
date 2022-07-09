@@ -1,11 +1,10 @@
 package com.github.williamjbf.moneyapi.resource;
 
 import com.github.williamjbf.moneyapi.event.ResourceCreatedEvent;
-import com.github.williamjbf.moneyapi.model.Person;
 import com.github.williamjbf.moneyapi.model.Posting;
+import com.github.williamjbf.moneyapi.repository.filter.PostingFilter;
 import com.github.williamjbf.moneyapi.repository.PostingRepository;
 import com.github.williamjbf.moneyapi.service.PostingService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,8 +30,8 @@ public class PostingResource {
     }
 
     @GetMapping
-    public List<Posting> list(){
-        return postingRepository.findAll();
+    public List<Posting> search(PostingFilter postingFilter){
+        return postingRepository.filter(postingFilter);
     }
 
     @GetMapping("/{id}")

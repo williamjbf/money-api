@@ -2,8 +2,10 @@ package com.github.williamjbf.moneyapi.repository.posting;
 
 import com.github.williamjbf.moneyapi.model.Posting;
 import com.github.williamjbf.moneyapi.repository.filter.PostingFilter;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -21,7 +23,7 @@ public class PostingRepositoryImpl implements PostingRepositoryQuery{
     private EntityManager manager;
 
     @Override
-    public List<Posting> filter(PostingFilter postingFilter) {
+    public Page<Posting> filter(PostingFilter postingFilter, Pageable pageable) {
         CriteriaBuilder builder = manager.getCriteriaBuilder();
         CriteriaQuery<Posting> criteria = builder.createQuery(Posting.class);
         Root<Posting> root = criteria.from(Posting.class);
@@ -31,8 +33,8 @@ public class PostingRepositoryImpl implements PostingRepositoryQuery{
         criteria.where(predicates);
 
         TypedQuery<Posting> query = manager.createQuery(criteria);
-
-        return query.getResultList();
+        addPaginationRestrictions(query,pageable);
+        return new PageImpl<>(query.getResultList(),pageable,total(postingFilter)) ;
     }
 
     private Predicate[] createRestrictions(PostingFilter postingFilter, CriteriaBuilder builder, Root<Posting> root) {
@@ -59,5 +61,27 @@ public class PostingRepositoryImpl implements PostingRepositoryQuery{
         }
 
         return predicates.toArray(new Predicate[predicates.size()]);
+    }
+
+    private void addPaginationRestrictions(TypedQuery<Posting> query, Pageable pageable) {
+        int currentPage = pageable.getPageNumber();
+        int totalRecordsPerPage = pageable.getPageSize();
+        int firstPageRecords = currentPage * totalRecordsPerPage;
+
+        query.setFirstResult(firstPageRecords);
+        query.setMaxResults(totalRecordsPerPage);
+    }
+
+    private Long total(PostingFilter postingFilter) {
+        CriteriaBuilder builder = manager.getCriteriaBuilder();
+        CriteriaQuery<Long> criteria = builder.createQuery(Long.class);
+        Root<Posting> root = criteria.from(Posting.class);
+
+        Predicate[] predicates = createRestrictions(postingFilter,builder,root);
+        criteria.where(predicates);
+
+        criteria.select(builder.count(root));
+
+        return manager.createQuery(criteria).getSingleResult();
     }
 }

@@ -6,13 +6,14 @@ import com.github.williamjbf.moneyapi.repository.filter.PostingFilter;
 import com.github.williamjbf.moneyapi.repository.PostingRepository;
 import com.github.williamjbf.moneyapi.service.PostingService;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -30,8 +31,8 @@ public class PostingResource {
     }
 
     @GetMapping
-    public List<Posting> search(PostingFilter postingFilter){
-        return postingRepository.filter(postingFilter);
+    public Page<Posting> search(PostingFilter postingFilter, Pageable pageable){
+        return postingRepository.filter(postingFilter, pageable);
     }
 
     @GetMapping("/{id}")
@@ -46,5 +47,11 @@ public class PostingResource {
 
         publisher.publishEvent(new ResourceCreatedEvent(this,response, savedPosting.getId()));
         return ResponseEntity.status(HttpStatus.CREATED).body(savedPosting);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteById(@PathVariable Long id){
+        postingRepository.deleteById(id);
     }
 }
